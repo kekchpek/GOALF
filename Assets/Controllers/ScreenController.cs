@@ -18,6 +18,22 @@ public class ScreenController : MonoBehaviour
     }
 
     /// <summary>
+    /// Вызывается при сворачивании игры
+    /// </summary>
+    public virtual void GameNotFocus()
+    {
+
+    }
+
+    /// <summary>
+    /// Вызыватся при нажатии на кнопуку "Назад"
+    /// </summary>
+    public virtual void OnEscapeButtonPressed()
+    {
+
+    }
+
+    /// <summary>
     /// Инициализация контроллера при начале игры
     /// </summary>
     public virtual void GameLoadInitialization()

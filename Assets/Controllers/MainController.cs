@@ -24,10 +24,7 @@ public class MainController : MonoBehaviour {
     int adTime;//счётчик определяющий сколько игр осталось до показа рекламы
     string adHandle = "ca-app-pub-5377701829054453/9318814921";//хэндл рекламы
     float sTime, sTimer, sTimer2;//таймеры для перехода от одного экрана к другому
-    public AudioClip[] levelLoopAudios, buttonAudiosDown, buttonAudiosUp;//аудиоклипы, которые используются в игре
-    public AudioClip endAudio, catchAudio;//--||--
-    public bool loopMusicOn;//включена ли фоновая музыка
-    public bool soundOn { get { return audioSources.active; } set { audioSources.SetActive(value); loopAudio.enabled = value; } }//включён ли звук
+    public bool soundOn { get { return audioSources.active; } set { audioSources.SetActive(value); } }//включён ли звук
  
     void OnApplicationFocus(bool hasFocus)//при сворачивании приложения ставит паузу если идёт игра
     {
@@ -44,6 +41,12 @@ public class MainController : MonoBehaviour {
             currentScreen.GameNotFocus();
         }
     }
+
+    public AudioSource GenerateAudioSource()
+    {
+        return audioSources.AddComponent<AudioSource>();
+    }
+
 
     /// <summary>
     /// Функция обрабатывающая инпут
@@ -86,7 +89,7 @@ public class MainController : MonoBehaviour {
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                currentScreen.OnEscapeButtonPress();
+                currentScreen.OnEscapeButtonPressed();
             }
         }
     }
@@ -100,8 +103,6 @@ public class MainController : MonoBehaviour {
         if (controller == null)
             controller = this;
         GoToScreen(controllers[0], 0.2f, 1f);//сразу переходим к экрану с интро
-        LoadRecords();//загружаем рекорд
-        LoadAd(null, null);//сразу начинаем загружать рекламу
         adTime = adTimer;//обнуляем счётчик игр через которые появится реклама
         if (PlayerPrefs.GetInt("sound", 1) == 1)//включаем/выключаем звук
             soundOn = true;
@@ -166,8 +167,6 @@ public class MainController : MonoBehaviour {
             currentScreen = nextScreen;
             nextScreen = null;
             currentCamera = currentScreen.cam;
-            if (currentScreen != InfoController.controller)
-                inputTime = true;
             return;
         }
         GoToScreen(controller, t / 2f, t / 2f);
@@ -185,8 +184,6 @@ public class MainController : MonoBehaviour {
             currentScreen = nextScreen;
             nextScreen = null;
             currentCamera = currentScreen.cam;
-            if (currentScreen != InfoController.controller)
-                inputTime = true;
             return;
         }
         GoToScreen(controller, t / 2f, t / 2f, color);
@@ -220,18 +217,6 @@ public class MainController : MonoBehaviour {
                     }
                     nextScreen.Init();
                     nextScreen.gameObject.SetActive(true);
-                    if (currentScreen == GameController.controller && GameController.controller.ended)//показываем рекламу если это конец игры
-                    {
-                        if (adTime <= 0)
-                        {
-                            adTime = adTimer;
-                            ShowAd();
-                        }
-                        else
-                        {
-                            adTime--;
-                        }
-                    }
                     currentScreen = nextScreen;
                     currentCamera = currentScreen.cam;
 
@@ -244,8 +229,6 @@ public class MainController : MonoBehaviour {
                     sTimer = 0;
                     sTime = 0;
                     nextScreen = null;
-                    if (currentScreen != InfoController.controller)
-                        inputTime = true;
                 }
             }
         }
