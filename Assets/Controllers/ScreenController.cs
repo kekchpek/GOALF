@@ -17,6 +17,11 @@ public class ScreenController : MonoBehaviour
 
     }
 
+    public virtual void Init(object[] args)
+    {
+
+    }
+
     /// <summary>
     /// Вызывается при сворачивании игры
     /// </summary>

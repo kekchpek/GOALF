@@ -7,11 +7,10 @@ public class MyAnimator : MonoBehaviour {
     public List<MyAnimation> anims;
     private Dictionary<string, MyAnimation> animations;
     public string  currentAnimation;
-    private float currentTime;
+    public float currentTime;
+    public bool loop;
+    public bool playAnimation;
     private SpriteRenderer spriteRenderer;
-
-    public delegate void VoidDelegate();
-    VoidDelegate OnAnimationPlayed;
 
 	void Start () {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -22,32 +21,49 @@ public class MyAnimator : MonoBehaviour {
             animations.Add(animNames[i], anims[i]);
         }
 	}
-	
+
+    public void PlayAnimation(string aName, float time, bool l)
+    {
+
+        if (animations.ContainsKey(aName))
+        {
+            loop = l;
+            currentAnimation = aName;
+            currentTime = 0f;
+            animations[currentAnimation].playTime = time;
+            playAnimation = true;
+        }
+    }
+
+    public void FixAnimation(float t, float t2, string aName)
+    {
+        if (animations.ContainsKey(aName))
+        {
+            playAnimation = false;
+            loop = false;
+            currentAnimation = aName;
+            animations[currentAnimation].playTime = t2;
+            spriteRenderer.sprite = animations[currentAnimation].GetCurrentSprite(t);
+        }
+    }
 
 	void Update () {
-        if (currentAnimation != "")
+        if (playAnimation)
         {
-            if (!animations.ContainsKey(currentAnimation))
+            currentTime += Time.deltaTime;
+            if (currentTime >= animations[currentAnimation].playTime)
             {
-                currentAnimation = "";
-            }
-            else
-            {
-                currentTime += Time.deltaTime;
-                if (currentTime >= animations[currentAnimation].playTime)
+                if (loop)
                 {
-                    AnimationPlayed();
                     currentTime -= animations[currentAnimation].playTime;
                 }
-                spriteRenderer.sprite = animations[currentAnimation].GetCurrentSprite(currentTime);
+                else
+                {
+                    playAnimation = false;
+                }
             }
+            spriteRenderer.sprite = animations[currentAnimation].GetCurrentSprite(currentTime);
         }
 	}
-
-    void AnimationPlayed()
-    {
-        if(OnAnimationPlayed != null)
-            OnAnimationPlayed();
-    }
 
 }

@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+﻿
+#if UNITY_EDITOR
+using UnityEngine;
 using UnityEditor;
 using System.IO;
+
 
 public static class CreateSO
 {
@@ -31,3 +34,4 @@ public static class CreateSO
         Selection.activeObject = asset;
     }
 }
+#endif
