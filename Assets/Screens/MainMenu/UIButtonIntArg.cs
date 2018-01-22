@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Reflection;
 
+/// <summary>
+/// Тот же UIButton только с int аргументом у функции Up
+/// </summary>
 public class UIButtonIntArg : UIButton {
 
     public int arg;

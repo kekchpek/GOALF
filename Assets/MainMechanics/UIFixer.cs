@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
-using UnityEngine.UI;
 
+/// <summary>
+/// Позволяет скалировать кнопку по двум осям исходя лиш из одного параметра размера экрана(либо ширины либо высоты)
+/// </summary>
 public class UIFixer : MonoBehaviour {
 
     public enum XY { X, Y }
@@ -10,9 +11,9 @@ public class UIFixer : MonoBehaviour {
     public float sizeDeltaY;
     public float anchoredPosX;
     public float anchoredPosY;
-    public XY XorY;
-    private RectTransform rt;
-    public Camera cam;
+    public XY XorY;//по какой оси закреплено скалирование объекта
+    private RectTransform rt;//рект трансформ кнопки
+    public Camera cam;//камера
 
     void Awake()
     {

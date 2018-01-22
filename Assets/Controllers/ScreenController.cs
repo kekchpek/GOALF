@@ -9,6 +9,7 @@ public class ScreenController : MonoBehaviour
 {
 
     public Camera cam;
+
     /// <summary>
     /// Инициализация контроллера при переходе к соответствующему экрану экрану
     /// </summary>
@@ -46,6 +47,9 @@ public class ScreenController : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Вызывается при переходе к другому экрану непосредственно перед моментом перехода
+    /// </summary>
     public virtual void Final()
     {
 

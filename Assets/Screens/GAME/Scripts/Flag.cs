@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Контроллер флага
+/// </summary>
 public class Flag : MonoBehaviour {
 
     public GameScreenController controller;

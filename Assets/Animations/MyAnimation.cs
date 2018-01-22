@@ -4,12 +4,12 @@ using UnityEditor;
 #endif
 
 public class MyAnimation : ScriptableObject {
-    public Sprite[] frames;
-    public float playTime;
+    public Sprite[] frames;//кадры
+    public float playTime;//время за которое проигрывается анимация
 
 
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR//добавляем в меню создание анимации
     [MenuItem("Assets/Create/MyAnimation")]
     public static void CreateMyAnim()
     {
@@ -18,7 +18,7 @@ public class MyAnimation : ScriptableObject {
 #endif
 
 
-    public Sprite GetCurrentSprite(float t)
+    public Sprite GetCurrentSprite(float t)//получение кадра на указанном времени
     {
         int n = Mathf.RoundToInt(t * (frames.Length - 1) / playTime);
         if (n < 0) n = 0;

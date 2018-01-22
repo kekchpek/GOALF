@@ -19,7 +19,7 @@ public class InteractableObject : MonoBehaviour
 
 
     /// <summary>
-    /// Нажатие
+    /// Отжатиe
     /// </summary>
     public virtual void Up()
     {
@@ -34,7 +34,7 @@ public class InteractableObject : MonoBehaviour
     }
 
     /// <summary>
-    /// Наведение
+    /// Нажатие
     /// </summary>
     public virtual void Down()
     {
@@ -48,6 +48,9 @@ public class InteractableObject : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Отмена нажатия
+    /// </summary>
     public virtual void Cancel()
     {
         if (!interactable || funcObj == null) return;
@@ -58,6 +61,9 @@ public class InteractableObject : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Нажатие и задержание
+    /// </summary>
     public virtual void On()
     {
         if (!interactable || funcObj == null) return;
@@ -68,21 +74,26 @@ public class InteractableObject : MonoBehaviour
         }
     }
 
+
+    /// <summary>
+    /// Нажимаем на кнопку
+    /// </summary>
     public void Press()
     {
         pressedNow = true;
     }
 
 
+
     public virtual void Update()
     {
-        if (pressedNow && !pressed)
+        if (pressedNow && !pressed)//вервый кадр нажатия
         {
             Down();
         }
-        if (!pressedNow && pressed)
+        if (!pressedNow && pressed)//если во втором кадре она отжата то отменяем нажатие
             Cancel();
-        if (pressedNow && pressed)
+        if (pressedNow && pressed)//кнопка задержана
             On();
         pressed = pressedNow;
         pressedNow = false;

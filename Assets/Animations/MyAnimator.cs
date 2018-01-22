@@ -2,26 +2,33 @@
 using UnityEngine;
 
 public class MyAnimator : MonoBehaviour {
+
     [SerializeField]
-    public List<string> animNames;
-    public List<MyAnimation> anims;
-    private Dictionary<string, MyAnimation> animations;
-    public string  currentAnimation;
-    public float currentTime;
-    public bool loop;
-    public bool playAnimation;
-    private SpriteRenderer spriteRenderer;
+    public List<string> animNames;//названия анимаций
+    public List<MyAnimation> anims;//анимации
+    private Dictionary<string, MyAnimation> animations;//словарь(название, анимация)
+    public string  currentAnimation;//воспроизводимая анимация
+    public float currentTime;//какой сейчас момент времени
+    public bool loop;//зациклена ли анимация
+    public bool playAnimation;//воспроизводися ли анимация
+    private SpriteRenderer spriteRenderer;//спрайт рендерер
 
 	void Start () {
         spriteRenderer = GetComponent<SpriteRenderer>();
         currentTime = 0;
-        animations = new Dictionary<string, MyAnimation>();
+        animations = new Dictionary<string, MyAnimation>();//создаём словарь из двух списков так как в редакторе юнити словари не отображаются
         for(int i = 0; i < animNames.Count; i++)
         {
             animations.Add(animNames[i], anims[i]);
         }
 	}
 
+    /// <summary>
+    /// Воспроизвести анимацию
+    /// </summary>
+    /// <param name="aName">название анимации</param>
+    /// <param name="time">время за которое она воспроизведётся</param>
+    /// <param name="l">зациклена ли анимация</param>
     public void PlayAnimation(string aName, float time, bool l)
     {
 
@@ -35,6 +42,12 @@ public class MyAnimator : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Показ определённого кадра анимации на времени t если максимальное время проигрыша анимации t2
+    /// </summary>
+    /// <param name="t"></param>
+    /// <param name="t2"></param>
+    /// <param name="aName">Название анимации</param>
     public void FixAnimation(float t, float t2, string aName)
     {
         if (animations.ContainsKey(aName))
@@ -48,6 +61,7 @@ public class MyAnimator : MonoBehaviour {
     }
 
 	void Update () {
+        //играем анимацию если она включена
         if (playAnimation)
         {
             currentTime += Time.deltaTime;
@@ -62,7 +76,7 @@ public class MyAnimator : MonoBehaviour {
                     playAnimation = false;
                 }
             }
-            spriteRenderer.sprite = animations[currentAnimation].GetCurrentSprite(currentTime);
+            spriteRenderer.sprite = animations[currentAnimation].GetCurrentSprite(currentTime);//получаем текущий кадр
         }
 	}
 

@@ -5,51 +5,57 @@ using UnityEngine.UI;
 
 public class GameScreenController : MainMenuController {
 
-    public Transform ballRaspawn;
-    public BallController ball;
-    public float camSpeed;
-    public GameObject gameCanvas;
-    bool moveFlag;
-    public float currentHeight;
-    public float ballHeight;
-    public float minX, maxX;
-    public int currentLevel;
-    private bool canSetFlag;
-    public int currentMode;
-    public GameObject loseZone;
-    public GameObject bottom;
-    private bool loseFlag;
+    public Transform ballRaspawn;//точка в которой появляется мячик в начале игры
+    public BallController ball;//сам мячик
+    public float camSpeed;//скорость с которой камера "догоняет" мячик
+    public GameObject gameCanvas;//канвас процесса игры
+    bool moveFlag;//двигается ли мячик
+    public float currentHeight;//высота на которой заспаунится следующая платформа
+    public float ballHeight;//текущая высота на которой находится шарик
+    public float minX, maxX;//минимальная и максимальноя позиция по иксу, где могут появляться платформы
+    public int currentLevel;//текущий уровень сложности
+    private bool canSetFlag;//можно ли поставить флаг на следующей появившейся платформе
+    public int currentMode;//такощий мод игры
+    public GameObject loseZone;//поражение если мяч залетит в эту зону. Ещё она удаляет платформы
+    public GameObject bottom;//пол, где начинает игрок
+    private bool loseFlag;//проиграна ли игра
+    //платформы для разных уровней сложности
+    //--------------------------------------
     public GameObject[] easyPlatform;
     public GameObject[] notEasyPlatform;
     public GameObject[] hardcorePlatform;
     public GameObject[] impozzibruPlatform;
-    public List<GameObject> platforms;
-    public GameObject flag;
-    private int hitCount;
-    private int points;
-    private Vector2 ballSpeed;
-    public Text skillText;
-    private float skillTimer;
-    private int currentLevelPoints;
-    public int[] completePoints;
-    public GameObject pauseObj;
-    public bool pauseFlag;
-    private Vector3 camPos;
-    public float loseJoltTime;
-    private bool endJoltFlag, endFadeFlag, endContentFlag;
+    //--------------------------------------
+    public List<GameObject> platforms;//список всех созданных платформ
+    public GameObject flag;//префоб флага
+    private int hitCount;//сколько ударов сделано с последнего попаданию по флагу
+    private int points;//текущие очки
+    private Vector2 ballSpeed;//
+    public Text skillText;//текстовое поле отображаемое при попадании по флагу
+    private float skillTimer;//время которое осталось до исчезания skillText
+    private int currentLevelPoints;//сколько очков набрано на текущем уровне сложности
+    public int[] completePoints;//сколько надо набрать очков для перехода на след уровень
+    public GameObject pauseObj;//объект паузы
+    public bool pauseFlag;//на паузе ли игра
+    private Vector3 camPos;//позиция камеры для тряски
+    private bool endJoltFlag, endFadeFlag, endContentFlag;//на каком этапе проявления экран поражения
+    public float loseJoltTime;//время тряски при проигрыше
     float currentLoseJoltTime;
-    public Image endBackground;
-    public Text[] endText;
-    public Text[] pointsText;
-    public RectTransform[] endMenu;
-    public float endFadeTime;
+    public float endFadeTime;//сколко времени появляется текст при поражении
     private float currentEndFadeTime;
-    public float endContentTime;
+    public float endContentTime;//сколько времени выезжает менюшка при поражении
     private float currentEndContentTime;
-    public GameObject loseMenu;
+    public Image endBackground;//затемнение фона при поражении
+    public Text[] endText;//текстовые поля на экране поражения
+    public Text[] pointsText;//все текстовые поля с очками на этом экране
+    public RectTransform[] endMenu;//элементы меню при поражении
+    public GameObject loseMenu;//объект меню поражения
 
-    protected bool right;
+    protected bool right;//платформы появляются то с права то слева
 
+    /// <summary>
+    /// Нажатие кнопка "Назад"
+    /// </summary>
     public override void OnEscapeButtonPressed()
     {
         if (loseFlag)
@@ -69,6 +75,10 @@ public class GameScreenController : MainMenuController {
         }
     }
 
+
+    /// <summary>
+    /// Возвращение на экран меню
+    /// </summary>
     public void GoToMenu()
     {
         object[] args = new object[3];
@@ -79,6 +89,11 @@ public class GameScreenController : MainMenuController {
         MainController.controller.GoToScreen(MainController.controller.controllers[1], 0.5f, 0.5f, Color.white, args);
     }
 
+
+    /// <summary>
+    /// Инициализация экрана
+    /// </summary>
+    /// <param name="args"></param>
     public override void Init(object[] args)
     {
         base.Init(args);
@@ -94,7 +109,7 @@ public class GameScreenController : MainMenuController {
         ball.transform.position = ballRaspawn.transform.position;
         currentHeight = 0;
         AddPoints(-points);
-        for (int i = 1; i <= 10; i++)
+        for (int i = 1; i <= 10; i++)//генерируем сразу 10 первых платформ
         {
             GenerateNext();
         }
@@ -106,19 +121,27 @@ public class GameScreenController : MainMenuController {
         currentLevel = ((MainMenuController)MainController.controller.controllers[1]).currDiff;
     }
 
+
+    /// <summary>
+    /// Активируется при смене экрана на другой
+    /// </summary>
     public override void Final()
     {
         base.Final();
-        foreach(GameObject g in platforms)
+        foreach(GameObject g in platforms)//уничтожаем все платформы
         {
             Destroy(g);
         }
     }
 
+
+    /// <summary>
+    /// Проигрыш
+    /// </summary>
     public void Lose()
     {
         if (loseFlag) return;
-        if (Records.SetRecord(points))
+        if (Records.SetRecord(points))//если новый рекорд
         {
             foreach (Text t in recordText)
             {
@@ -126,8 +149,8 @@ public class GameScreenController : MainMenuController {
                 t.text = "NEW BEST : " + points.ToString();
             }
         }
-        SoundController.PlaySound("gameover");
-        camPos = cam.transform.position;
+        SoundController.PlaySound("gameover");//проигрываем звук
+        camPos = cam.transform.position;//сохраняем текущую позицию камеры
         gameCanvas.SetActive(false);
         endJoltFlag = true;
         loseFlag = true;
@@ -156,21 +179,32 @@ public class GameScreenController : MainMenuController {
         }
 
     }
-
+    
+    /// <summary>
+    /// Устанавливает зону проигрыша исходя из текущей позиции камеры. На 0,3 высоты камеры ниже
+    /// </summary>
     public void SetLoseZone()
     {
         if (cam.ScreenToWorldPoint(new Vector3(0, -cam.pixelHeight * 0.3f, 0)).y > loseZone.transform.position.y)
             loseZone.transform.position = cam.ScreenToWorldPoint(new Vector3(0, -cam.pixelHeight * 0.3f, 0));
     }
 
+    /// <summary>
+    /// Увеличивает кол-во ударов по мячу на 1
+    /// </summary>
     public void Hit()
     {
         hitCount++;
     }
 
+    /// <summary>
+    /// Генерирует следующую платформу
+    /// </summary>
     public void GenerateNext()
     {
-        GameObject created = null;
+        GameObject created = null;//объект который мы создадим
+        //выбираем платформу по уровню сложности
+        //--------------------------------------
         if (currentLevel == 0)
         {
             created = Instantiate(easyPlatform[Random.Range(0, easyPlatform.Length)], Vector3.zero, Quaternion.identity, transform);
@@ -187,6 +221,10 @@ public class GameScreenController : MainMenuController {
         {
             created = Instantiate(impozzibruPlatform[Random.Range(0, impozzibruPlatform.Length)], Vector3.zero, Quaternion.identity, transform);
         }
+        //--------------------------------------
+
+        //справа или слева появится платформа
+        //-----------------------------------
         if (right)
         {
             created.transform.localPosition = new Vector3(Random.Range((minX+maxX)/2f, maxX), currentHeight, 0);
@@ -196,8 +234,12 @@ public class GameScreenController : MainMenuController {
             created.transform.localPosition = new Vector3(Random.Range(minX, (minX + maxX) / 2f), currentHeight, 0);
         }
         right = !right;
+        //------------------------------------
         platforms.Add(created);
         currentHeight += 4f;
+
+        //создаём флаг
+        //------------------
         GameObject _flag = null;
         if (canSetFlag)
         {
@@ -213,20 +255,30 @@ public class GameScreenController : MainMenuController {
         }
         else
             canSetFlag = true;
+        //------------------
+
+        //устанавливаем флаг на платформу
+        //-------------------------------
         Transform t = created.transform.GetChild(Random.Range(0, created.transform.childCount));
         if (_flag != null)
         {
             platforms.Add(_flag);
             _flag.transform.position = t.position;
-            if (Random.Range(0, 2) == 0)
+            if (Random.Range(0, 2) == 0)//поварачиваем флаг в случайную сторону
             {
                 _flag.transform.localScale = new Vector3(-_flag.transform.localScale.x, _flag.transform.localScale.y, 1);
             }
             _flag.transform.parent = t;
             _flag.GetComponentInChildren<Flag>().controller = this;
         }
+        //-------------------------------
     }
 
+
+    /// <summary>
+    /// Добавить очки и сбросить кол-во ударов
+    /// </summary>
+    /// <returns></returns>
     public int GetFlag()
     {
         int ret = hitCount;
@@ -262,6 +314,10 @@ public class GameScreenController : MainMenuController {
         return ret;
     }
 
+    /// <summary>
+    /// Добавить очки
+    /// </summary>
+    /// <param name="p">Кол-во очков</param>
     private void AddPoints(int p)
     {
         points += p;
@@ -395,35 +451,43 @@ public class GameScreenController : MainMenuController {
             }
         }
     }
-     
+    
+    
+     /// <summary>
+     /// Поставить игру на паузу
+     /// </summary>
     public void Pause()
     {
         if (!pauseFlag)
         {
             gameCanvas.SetActive(false);
-            ballSpeed = ball.rb.velocity;
-            ball.rb.velocity = Vector3.zero;
-            ball.rb.isKinematic = true;
             pauseObj.SetActive(true);
             pauseFlag = true;
+            Time.timeScale = 0;
         }
     }
 
+    /// <summary>
+    /// Продолжить игру
+    /// </summary>
     public void Unpause()
     {
         if (pauseFlag)
         {
-            ball.rb.isKinematic = false;
-            ball.rb.velocity = ballSpeed;
             pauseObj.SetActive(false);
             gameCanvas.SetActive(true);
             pauseFlag = false;
+            Time.timeScale = 1;
         }
     }
 
+    /// <summary>
+    /// Говорит контроллеру двигается шарик или нет
+    /// </summary>
+    /// <param name="b">true - двигается false - не двигается</param>
     public void SetMove(bool b)
     {
-        if(moveFlag && !b)
+        if(moveFlag && !b)//если шарик перестал двигаться только сейчас
         {
             float y = ball.transform.position.y;
             while(currentHeight - y < 45)

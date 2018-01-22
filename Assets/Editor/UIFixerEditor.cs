@@ -8,7 +8,7 @@ public class UIFixerEditor : Editor {
     {
         base.OnInspectorGUI();
         UIFixer myTarget = (UIFixer)target;
-        if (GUILayout.Button("Fix"))
+        if (GUILayout.Button("Reset"))
         {
             myTarget.CalulateSize();
         }

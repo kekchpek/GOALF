@@ -4,11 +4,13 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 
-
+/// <summary>
+/// Класс для создания ScriptableObject'ов
+/// </summary>
 public static class CreateSO
 {
     /// <summary>
-    //	This makes it easy to create, name and place unique new ScriptableObject asset files.
+    ///	This makes it easy to create, name and place unique new ScriptableObject asset files.
     /// </summary>
     public static void CreateAsset<T>() where T : ScriptableObject
     {

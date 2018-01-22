@@ -2,12 +2,15 @@
 
 using UnityEngine;
 
+/// <summary>
+/// Майн контроллер для гольфа
+/// </summary>
 public class GoalfMainController : MainController {
 
     public AudioClip gameoverSound, lockedSound, spawnGolferSound, hitSound, boogerS, parS, birdyS, holyS, aimSound, playS;
     public GameObject ball;
 
-    protected override void Start()
+    protected override void Start()//добавление звуков в контроллер звуков
     {
         base.Start();
         SoundController.AddSound(gameoverSound, "gameover");

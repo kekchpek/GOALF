@@ -1,9 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿
 using UnityEngine;
 
 public class IntroController : ScreenController {
 
+
+    //Этот экран просто показывает лого и сразу переходит к меню
     private float currentTime;
     public float time;
     private bool active;

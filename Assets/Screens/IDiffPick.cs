@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Не помню что это такое
+/// </summary>
 public class IDiffPick : ScreenController {
 
 
